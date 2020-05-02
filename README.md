@@ -2,13 +2,15 @@
 
 该项目已经发布到[我的服务器](http://106.14.209.11/#/)，项目的数据库文件在/sql文件夹下
 
+[点击查看项目前端代码](https://github.com/forestlinji/peing-qd)
+
 ~~这几个月宅在家太浪了，差点写不完，好多原本规划的功能都被砍了~~
 
 注意，测试期间不开放注册功能，也不会发送邮件，可以使用账号**test1**，密码**admin**进行体验，请勿修改邮箱或更改密码
 
 ## 项目技术栈
 
-- 前端: Vue + Element UI
+- 前端: Vue + Element UI + Axios
 - 后端: SpringBoot + MybatisPlus + SpringSecurity + JWT + Redis
 
 ## 项目简介
