@@ -32,7 +32,6 @@ spring:
     time-zone: GMT+8
 
 mybatis-plus:
-  type-aliases-package: com.forestj.pojo
   mapper-locations: classpath:mybatis/mapper/*.xml
   configuration:
     map-underscore-to-camel-case: true
