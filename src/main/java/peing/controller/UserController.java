@@ -64,11 +64,23 @@ public class UserController {
     @PostMapping("/avatar")
     public ResponseJson avatar(@RequestParam("file") MultipartFile avatar){
         //判断文件格式
-        String suffixList = "jpg,gif,png,bmp";
+        String suffixList = "jpg,png";
+
         String uploadFileName = avatar.getOriginalFilename();
         String suffix = uploadFileName.substring(uploadFileName.lastIndexOf(".")
                 + 1, uploadFileName.length());
         if(!suffixList.contains(suffix)){
+            return new ResponseJson(ResultCode.WRONGFORMAT);
+        }
+        //检查是否是图片
+        BufferedImage bi = null;
+        try {
+            bi = ImageIO.read(avatar.getInputStream());
+            if(bi == null){
+                return new ResponseJson(ResultCode.WRONGFORMAT);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
             return new ResponseJson(ResultCode.WRONGFORMAT);
         }
         Long userId = Long.parseLong(currentUser.getCurrentUser().getUsername());
