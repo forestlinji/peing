@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import peing.pojo.*;
 import peing.service.MailService;
+import peing.service.MessageService;
 import peing.service.impl.SysCaptchaServiceImpl;
 import peing.service.UserService;
 import peing.utils.AesUtil;
@@ -56,6 +57,8 @@ public class AuthController {
     @Qualifier("fakeMailServiceImpl")
     @Autowired
     private MailService mailService;
+    @Autowired
+    private MessageService messageService;
 
     @GetMapping("/captcha.jpg")
     public void captcha(HttpServletResponse response, @RequestParam(required = true) String uuid)throws IOException {
@@ -113,6 +116,13 @@ public class AuthController {
         if(!success){
             return new ResponseJson((ResultCode.UNVALIDPARAMS));
         }
+        Message message = new Message();
+        DefaultIdentifierGenerator identifierGenerator = new DefaultIdentifierGenerator(1,1);
+        message.setMessageId(identifierGenerator.nextId(message));
+        message.setTitle("peing欢迎您的使用");
+        message.setContent("您已经成功激活peing的账号，祝您使用愉快");
+        message.setPublishDate(new Date());
+        messageService.publishMessage(userId,message);
         return new ResponseJson(ResultCode.SUCCESS);
     }
 

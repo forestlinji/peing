@@ -17,4 +17,6 @@ public interface MessageService {
 
     Integer countUnreadMessage(Long userId);
 
+    void publishMessage(Long userId,Message message);
+
 }

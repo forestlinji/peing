@@ -28,7 +28,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
 //    @Async
     public void publishAnnouncement(Message message) {
-//        messageMapper.insert(message);
+        messageMapper.insert(message);
         List<Long> userIds = userInfoMapper.selectAllUserId();
         userIds.forEach(userId->{
             System.out.println(userId);
@@ -49,5 +49,11 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public Integer countUnreadMessage(Long userId) {
         return messageMapper.countUnreadMessage(userId);
+    }
+
+    @Override
+    public void publishMessage(Long userId, Message message) {
+        messageMapper.insert(message);
+        messageMapper.insert2MessageUser(message.getMessageId(),userId);
     }
 }

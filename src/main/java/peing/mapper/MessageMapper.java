@@ -19,7 +19,7 @@ public interface MessageMapper extends BaseMapper<Message> {
      * @param userId
      * @return
      */
-    @Select("select m.message_id,m.title,m.publish_date,mu.is_read from message m,message_user mu where mu.user_id = #{userId} and mu.message_id = m.message_id")
+    @Select("select m.message_id,m.title,m.publish_date,mu.is_read from message m,message_user mu where mu.user_id = #{userId} and mu.message_id = m.message_id order by m.message_id desc")
     Page<Message> selectByUserId(Page<Message> messagePage, Long userId);
 
     /**

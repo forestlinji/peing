@@ -1,5 +1,6 @@
 package peing.controller;
 
+import com.baomidou.mybatisplus.core.incrementer.DefaultIdentifierGenerator;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import peing.pojo.*;
+import peing.service.MessageService;
 import peing.service.QuestionService;
 import peing.service.UserService;
 import peing.vo.QuestionedAdminVo;
@@ -31,6 +33,8 @@ public class QuestionController {
     private UserService userService;
     @Autowired
     private QuestionService questionService;
+    @Autowired
+    private MessageService messageService;
 
     /**
      * 用于从数据中删除提问人
@@ -85,6 +89,13 @@ public class QuestionController {
         question.setIsBan(false);
         question.setIsReport(false);
         questionService.insertQuestion(question);
+        Message message = new Message();
+        DefaultIdentifierGenerator identifierGenerator = new DefaultIdentifierGenerator(1,1);
+        message.setMessageId(identifierGenerator.nextId(message));
+        message.setTitle("您收到了新的提问");
+        message.setContent("您收到了新的提问,赶快去回复吧");
+        message.setPublishDate(new Date());
+        messageService.publishMessage(questionedId,message);
         return new ResponseJson(ResultCode.SUCCESS);
     }
 
@@ -100,6 +111,13 @@ public class QuestionController {
         question.setReply(reply);
         question.setReplyDate(new Date());
         questionService.updateQuestion(question);
+        Message message = new Message();
+        DefaultIdentifierGenerator identifierGenerator = new DefaultIdentifierGenerator(1,1);
+        message.setMessageId(identifierGenerator.nextId(message));
+        message.setTitle("您有新的回复");
+        message.setContent("您对用户"+currentUser.getCurrentUser().getUsername()+"发起的提问收到了新回复");
+        message.setPublishDate(new Date());
+        messageService.publishMessage(question.getQuestionerId(),message);
         return new ResponseJson(ResultCode.SUCCESS);
     }
 

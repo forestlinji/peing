@@ -42,4 +42,8 @@ public class Message {
      */
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date publishDate;
+    /**
+     * 是否已读
+     */
+    private Boolean isRead;
 }

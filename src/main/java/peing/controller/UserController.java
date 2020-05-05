@@ -2,6 +2,7 @@ package peing.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.incrementer.DefaultIdentifierGenerator;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -11,10 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import peing.pojo.*;
-import peing.service.BanService;
-import peing.service.QuestionService;
-import peing.service.ReportService;
-import peing.service.UserService;
+import peing.service.*;
 import peing.vo.*;
 
 import javax.imageio.ImageIO;
@@ -49,6 +47,8 @@ public class UserController {
     private ReportService reportService;
     @Autowired
     private RedisTemplate redisTemplate;
+    @Autowired
+    private MessageService messageService;
 
     /**
      * 获取当前登录用户信息(含权限)
@@ -225,6 +225,13 @@ public class UserController {
             redisTemplate.opsForValue().set("blacklist:"+userInfo.getUserId(),current);
             redisTemplate.expire("blacklist:"+userInfo.getUserId(),30, TimeUnit.DAYS);
         }
+        Message message = new Message();
+        DefaultIdentifierGenerator identifierGenerator = new DefaultIdentifierGenerator(1,1);
+        message.setMessageId(identifierGenerator.nextId(message));
+        message.setTitle("您的举报已经得到处理");
+        message.setContent("您在"+report.getReportDate()+"发起的举报已经得到处理\n举报处理结果:"+(reportVo.getStatus()==1?"已封禁":"未封禁"));
+        message.setPublishDate(new Date());
+        messageService.publishMessage(report.getReporterId(),message);
         return new ResponseJson(ResultCode.SUCCESS);
     }
 
